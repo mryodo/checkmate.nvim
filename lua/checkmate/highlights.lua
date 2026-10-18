@@ -134,12 +134,12 @@ function M._apply_progressive(bufnr, todo_map, opts)
       -- skip_region is end-exclusive
       -- we convert todo.range (semantic range) to end exclusive (+1)
       local should_skip = opts.skip_region
-        and util.ranges_overlap(
-          item.range.start.row,
-          item.range["end"].row + 1,
-          opts.skip_region.start_row,
-          opts.skip_region.end_row
-        )
+          and util.ranges_overlap(
+            item.range.start.row,
+            item.range["end"].row + 1,
+            opts.skip_region.start_row,
+            opts.skip_region.end_row
+          )
 
       if not should_skip then
         table.insert(all_roots, item)
@@ -640,7 +640,7 @@ function M.highlight_list_markers(bufnr, todo_item, todo_rows)
 
   if marker_text then
     local hl_group = todo_item.list_marker.type == "ordered" and "CheckmateListMarkerOrdered"
-      or "CheckmateListMarkerUnordered"
+        or "CheckmateListMarkerUnordered"
 
     vim.api.nvim_buf_set_extmark(bufnr, hl_ns(), start_row, start_col, {
       end_row = start_row,
@@ -786,7 +786,7 @@ function M.highlight_content(bufnr, todo_item, todo_map)
     for i = start, #line do
       local char = line:sub(i + 1, i + 1) -- +1 for 1-based substring
       if char ~= " " and char ~= "\t" then
-        content_start = i -- 0-based position
+        content_start = i                 -- 0-based position
         break
       end
     end
@@ -800,7 +800,7 @@ function M.highlight_content(bufnr, todo_item, todo_map)
     if line and #line > 0 then
       if row == todo_item.range.start.row then
         local marker_pos = todo_item.todo_marker.position.col -- byte pos (0-based)
-        local marker_len = #todo_item.todo_marker.text -- byte length
+        local marker_len = #todo_item.todo_marker.text        -- byte length
         -- find the actual content start after the todo marker and any whitespace
         local search_start = marker_pos + marker_len
         local content_start = get_content_start(line, search_start)
@@ -843,7 +843,7 @@ function M.highlight_content(bufnr, todo_item, todo_map)
         local content_start = nil
 
         local list_marker_pattern = "^(%s*)[%-%*%+]%s+" -- unordered
-        local ordered_pattern = "^(%s*)%d+[%.%)]%s+" -- ordered
+        local ordered_pattern = "^(%s*)%d+[%.%)]%s+"    -- ordered
 
         local _, marker_end = row_line:find(list_marker_pattern)
         if not marker_end then
@@ -920,7 +920,7 @@ function M.show_todo_count_indicator(bufnr, todo_item, todo_map)
     })
   elseif config.options.todo_count_position == "eol" then
     vim.api.nvim_buf_set_extmark(bufnr, hl_ns(), todo_item.range.start.row, 0, {
-      end_col = #indicator_text,
+      end_col = vim.str_utfindex(indicator_text),
       virt_text = { { indicator_text, "CheckmateTodoCountIndicator" } },
       virt_text_pos = "eol",
       priority = M.PRIORITY.CONTENT,
